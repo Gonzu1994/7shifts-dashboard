@@ -267,35 +267,42 @@ export default function Page() {
               {!isLoading && !error && tableRows.length === 0 && (
                 <tr><td colSpan={8} style={tdMuted}>Brak wyników dla bieżących filtrów.</td></tr>
               )}
-              {tableRows.map(row=>(
-                <tr key={row.id} style={{ background:'transparent' }}>
-                  <td style={td}>{row.name}</td>
-                  <td style={td}>
-                    <span style={{
-                      display:'inline-flex', alignItems:'center', padding:'3px 8px', borderRadius:999,
-                      background:`linear-gradient(90deg, ${GROUP_META[row.group].chipFrom}, ${GROUP_META[row.group].chipTo})`,
-                      color:'#0b0e13', fontWeight:700, fontSize:12
-                    }}>
-                      {GROUP_META[row.group].label}
-                    </span>
-                  </td>
-                  <td style={tdMuted}>{row.date}</td>
-                  <td style={td}>
-                    <div style={{ width:160, height:8, background:'#222731', borderRadius:999, overflow:'hidden' }}>
-                      <div style={{
-                        height:'100%',
-                        width:`${row.percent}%`,
-                        background:'linear-gradient(90deg,#f59e0b,#fbbf24)'
-                      }}/>
-                    </div>
-                    <div style={{ fontSize:12, color:'#94a3b8', marginTop:4 }}>{row.percent}%</div>
-                  </td>
-                  <td style={{ ...td, color:'#34d399' }}>{row.counters.on_time}</td>
-                  <td style={{ ...td, color:'#fbbf24' }}>{row.counters.late}</td>
-                  <td style={{ ...td, color:'#f87171' }}>{row.counters.missed}</td>
-                  <td style={{ ...td, color:'#a1a1aa' }}>{row.counters.in_progress}</td>
-                </tr>
-              ))}
+              {tableRows.map(row=>{
+                // SAFE fallback na brak chipFrom/chipTo w GROUP_META:
+                const meta = GROUP_META[row.group] as unknown as { label: string; color?: string; chipFrom?: string; chipTo?: string };
+                const chipFrom = meta.chipFrom ?? meta.color ?? '#ffffff';
+                const chipTo   = meta.chipTo   ?? meta.color ?? '#ffffff';
+
+                return (
+                  <tr key={row.id} style={{ background:'transparent' }}>
+                    <td style={td}>{row.name}</td>
+                    <td style={td}>
+                      <span style={{
+                        display:'inline-flex', alignItems:'center', padding:'3px 8px', borderRadius:999,
+                        background:`linear-gradient(90deg, ${chipFrom}, ${chipTo})`,
+                        color:'#0b0e13', fontWeight:700, fontSize:12
+                      }}>
+                        {GROUP_META[row.group].label}
+                      </span>
+                    </td>
+                    <td style={tdMuted}>{row.date}</td>
+                    <td style={td}>
+                      <div style={{ width:160, height:8, background:'#222731', borderRadius:999, overflow:'hidden' }}>
+                        <div style={{
+                          height:'100%',
+                          width:`${row.percent}%`,
+                          background:'linear-gradient(90deg,#f59e0b,#fbbf24)'
+                        }}/>
+                      </div>
+                      <div style={{ fontSize:12, color:'#94a3b8', marginTop:4 }}>{row.percent}%</div>
+                    </td>
+                    <td style={{ ...td, color:'#34d399' }}>{row.counters.on_time}</td>
+                    <td style={{ ...td, color:'#fbbf24' }}>{row.counters.late}</td>
+                    <td style={{ ...td, color:'#f87171' }}>{row.counters.missed}</td>
+                    <td style={{ ...td, color:'#a1a1aa' }}>{row.counters.in_progress}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
