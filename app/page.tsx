@@ -18,6 +18,9 @@ const fetcher = (url: string) => fetch(url).then(async (r) => {
 
 const GROUP_ORDER: GroupKey[] = ['plaza32a', 'wydma33', 'toalety', 'toalety_restauracja', 'restauracja'];
 
+// helper: suma zadań w licznikach
+const totalCounters = (c: Counters) => c.on_time + c.late + c.missed + c.in_progress;
+
 export default function Page() {
   const [locationId, setLocationId] = useState('147255');
   const [startDate, setStartDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
@@ -40,7 +43,7 @@ export default function Page() {
       lists: [] as TaskList[],
     };
 
-    const base: Counters = { on_time: 0, late: 0, missed: 0, in_progress: 0, total: 0 };
+    const base: Counters = { on_time: 0, late: 0, missed: 0, in_progress: 0 };
     const perGroup: Record<GroupKey, { lists: TaskList[]; counters: Counters; percent: number }> = {
       plaza32a: { lists: [], counters: { ...base }, percent: 0 },
       wydma33: { lists: [], counters: { ...base }, percent: 0 },
@@ -53,9 +56,11 @@ export default function Page() {
       const g = detectGroup(list.name);
       perGroup[g].lists.push(list);
       const cnt = countList(list as any, nowISO);
-      for (const k of ['on_time','late','missed','in_progress','total'] as const) {
-        (perGroup[g].counters[k] as number) += (cnt[k] as number);
-      }
+      // sumuj znane pola Counters (bez "total")
+      perGroup[g].counters.on_time     += cnt.on_time;
+      perGroup[g].counters.late        += cnt.late;
+      perGroup[g].counters.missed      += cnt.missed;
+      perGroup[g].counters.in_progress += cnt.in_progress;
     }
     for (const g of GROUP_ORDER) perGroup[g].percent = progressPercent(perGroup[g].counters);
 
@@ -71,7 +76,7 @@ export default function Page() {
       label: GROUP_META[g].label,
       percent: item?.percent ?? 0,
       lists: item?.lists?.length ?? 0,
-      tasks: c?.total ?? 0,
+      tasks: c ? totalCounters(c) : 0,
     };
   }), [enriched]);
 
@@ -100,7 +105,7 @@ export default function Page() {
       agg.on_time += r.counters.on_time;
       agg.late    += r.counters.late;
       agg.missed  += r.counters.missed;
-      agg.total   += r.counters.total;
+      agg.total   += totalCounters(r.counters);
     }
     return agg;
   }, [tableRows]);
@@ -115,10 +120,13 @@ export default function Page() {
     const buckets: Record<string, number> = {};
     for (const l of data?.lists ?? []) {
       for (const t of l.tasks ?? []) {
-        if (t.completed && t.completed_at) {
+        // zgodnie z mailem 7shifts — opieramy się na completed_at (flaga "completed" nie jest wiarygodna)
+        if (t.completed_at) {
           const d = new Date(t.completed_at);
-          const h = d.getHours().toString().padStart(2, '0') + ':00';
-          buckets[h] = (buckets[h] ?? 0) + 1;
+          if (!isNaN(d.getTime())) {
+            const h = d.getHours().toString().padStart(2, '0') + ':00';
+            buckets[h] = (buckets[h] ?? 0) + 1;
+          }
         }
       }
     }
