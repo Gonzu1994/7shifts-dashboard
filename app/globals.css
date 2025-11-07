@@ -1,0 +1,51 @@
+/* app/globals.css – dark theme + prosty system kart/tabeli */
+
+:root { color-scheme: dark; }
+html,body{margin:0;padding:0;background:#0d0f12;color:#fff;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif}
+
+.dark-wrap .header{padding:24px 24px 8px}
+.dark-wrap .header h1{margin:0;font-size:20px;font-weight:700}
+.muted{color:#9aa3b2}
+.xs{font-size:12px}
+.big{font-size:28px;font-weight:800}
+.strong{font-weight:600}
+.err{color:#ff9797}
+
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 24px}
+.controls label{font-size:14px;color:#d7dce5}
+.controls input{margin-left:8px;background:#151920;border:1px solid #262b34;border-radius:8px;color:#fff;padding:6px 8px}
+.controls .right{margin-left:auto}
+
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:0 24px 8px}
+.tile{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid #1f2430;background:#11151b;border-radius:16px;transition:all .15s}
+.tile:hover{border-color:#2a3242}
+.tile-active{border-color:#ff7a18;background:#151920}
+.tile-small{font-size:12px}
+.tile-title{font-size:16px;font-weight:600}
+.tile-cta{margin-left:auto;color:#ffb26a;font-size:13px}
+
+.ring text, .ring .ring-txt{fill:#fff;font-weight:600;font-size:14px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;padding:12px 24px}
+.card{background:#11151b;border:1px solid #1f2430;border-radius:14px;padding:14px}
+.card-danger{border-color:#6b1f1f;background:#211315}
+.card-warn{border-color:#6a4a17;background:#201a10}
+.card-ok{border-color:#174a34;background:#0f1c17}
+
+.table-wrap{padding:12px 24px 32px}
+.table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid #1f2430;border-radius:16px}
+.table thead th{background:#0f1217;color:#c5cad4;padding:10px 12px;text-align:left;font-weight:600}
+.table tbody td{border-top:1px solid #171b22;padding:10px 12px;vertical-align:top}
+
+.bar{height:8px;width:160px;background:#1f2430;border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;background:#ff7a18}
+
+.badge{display:inline-block;font-size:12px;padding:4px 8px;border-radius:999px;border:1px solid #2a3242;background:#1a1f29;color:#cbd3df}
+.badge-danger{background:#351417;border-color:#5c2020;color:#ffb0b0}
+.badge-warn{background:#302114;border-color:#6a4a17;color:#ffd599}
+.badge-ok{background:#132a22;border-color:#295e49;color:#9de4c8}
+
+.warns{padding:0 24px 24px}
+.warns details{background:#151920;border:1px solid #2a3242;border-radius:12px;padding:12px}
+.warns summary{cursor:pointer;color:#cbd3df}
+.warns ul{margin:8px 0 0 18px;font-size:12px;color:#a8b2c2}
